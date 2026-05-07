@@ -57,6 +57,9 @@
 
                 environment.systemPackages = import ./common/common-tools.nix { inherit pkgs; };
 
+                # System wide docker activation
+                virtualisation.docker.enable = true;
+
                 users.users.${currentUser} = {
                     isNormalUser = true;
                     extraGroups = [ "wheel" "networkmanager" ];
