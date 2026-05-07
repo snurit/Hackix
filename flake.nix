@@ -52,7 +52,20 @@
                 fileSystems."/home/${currentUser}/findings" = {
                 device = "/dev/disk/by-label/FINDINGS";
                 fsType = "ext4";
-                options = [ "rw" "noatime" "sync" ]; 
+                options = [ 
+                    "rw" 
+                    "noatime" 
+                    "sync"
+                    "nofail" # avoid boot freeze if USB key or disk partition is missing
+                    "x-systemd.device-timeout=5s" # wait 5 secs
+                    ]; 
+                };
+
+                # LUKS management for FINDINGS disk or USB key
+                boot.initrd.luks.devices."findings_crypt" = {
+                    device = "/dev/disk/by-label/FINDINGS";
+                    preLVM = true;
+                    allowDiscards = true;
                 };
 
                 environment.systemPackages = import ./common/common-tools.nix { inherit pkgs; };
